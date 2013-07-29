@@ -1,5 +1,33 @@
 #!/bin/bash
-#This shell will build, package and deploy the various demo installations on krypton
+#This shell will build, package and deploy the various demo installations on a test machine
+if [ -z $1 ]
+then
+    echo "Name of branch to build is required"
+    exit 1
+fi
+
+echo Will build from $1
+cd source/OESandbox
+git checkout $1
+if [ $? != 0 ]
+then
+    echo
+    echo "branch is not local will try to fetch it from main repository"
+    echo 
+
+    git checkout -b $1 origin/$1
+
+    if [ $? != 0 ]
+	then
+	echo
+	echo "$1 not found in main repository. Check name"
+	exit 1 
+    fi
+fi
+
+git pull
+git rev-list --reverse HEAD | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' >> ../../version.txt 
+cd ../..
 
 #build and package application
 LANG=en_US ant buildpackage
@@ -29,15 +57,6 @@ then
    fi		
 
    sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CDIOpenElis.war
-
-   echo "installing CDIOpenElisTraining"
-
-   if [ -d /usr/share/tomcat5.5/webapps/CDIOpenElisTraining ]
-   then
-       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CDIOpenElisTraining
-   fi		
-
-   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CDIOpenElisTraining.war
 
    echo "installing LNSP_HaitiOpenElis"
 
