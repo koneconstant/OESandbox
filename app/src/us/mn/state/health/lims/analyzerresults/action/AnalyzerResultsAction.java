@@ -85,8 +85,9 @@ public class AnalyzerResultsAction extends BaseAction {
 	private TestReflexDAO testReflexDAO = new TestReflexDAOImpl();
 	private ResultDAO resultDAO = new ResultDAOImpl();
 
-	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	protected ActionForward performAction(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		String forward = FWD_SUCCESS;
 
@@ -105,10 +106,12 @@ public class AnalyzerResultsAction extends BaseAction {
 			List<AnalyzerResults> analyzerResultsList = getAnalyzerResults();
 
 			if (analyzerResultsList.isEmpty()) {
-				PropertyUtils.setProperty(dynaForm, "resultList", new ArrayList<AnalyzerResultItem>());
-				String msg = StringUtil.getMessageForKey("result.noResultsFound");
+				PropertyUtils.setProperty(dynaForm, "resultList",
+						new ArrayList<AnalyzerResultItem>());
+				String msg = StringUtil
+						.getMessageForKey("result.noResultsFound");
 				PropertyUtils.setProperty(dynaForm, "notFoundMsg", msg);
-				paging.setEmptyPageBean(request,dynaForm);
+				paging.setEmptyPageBean(request, dynaForm);
 
 			} else {
 
@@ -136,14 +139,16 @@ public class AnalyzerResultsAction extends BaseAction {
 							groupHeader = resultItem;
 							setNonConformityStateForResultItem(resultItem);
 						}
-						resultItem.setSampleGroupingNumber(sampleGroupingNumber);
+						resultItem
+								.setSampleGroupingNumber(sampleGroupingNumber);
 
 						// There are two reasons there may not be a test id,
 						// 1. it could not be found due to missing mapping
 						// 2. it may not be looked for if the results are read
 						// only
 						// we only want to capture 1.
-						if (GenericValidator.isBlankOrNull(resultItem.getTestId()) && !resultItem.isReadOnly()) {
+						if (GenericValidator.isBlankOrNull(resultItem
+								.getTestId()) && !resultItem.isReadOnly()) {
 							groupHeader.setGroupIsReadOnly(true);
 							missingTest = true;
 						} else if (resultItem.getIsControl()) {
@@ -154,9 +159,11 @@ public class AnalyzerResultsAction extends BaseAction {
 					}
 				}
 
-				PropertyUtils.setProperty(dynaForm, "missingTestMsg", new Boolean(missingTest));
+				PropertyUtils.setProperty(dynaForm, "missingTestMsg",
+						new Boolean(missingTest));
 
-				paging.setDatabaseResults(request, dynaForm, analyzerResultItemList);
+				paging.setDatabaseResults(request, dynaForm,
+						analyzerResultItemList);
 			}
 		} else {
 			paging.page(request, dynaForm, page);
@@ -165,55 +172,68 @@ public class AnalyzerResultsAction extends BaseAction {
 		return mapping.findForward(forward);
 	}
 
-	private void setNonConformityStateForResultItem(AnalyzerResultItem resultItem) {
+	private void setNonConformityStateForResultItem(
+			AnalyzerResultItem resultItem) {
 		boolean nonconforming = false;
-		
-		Sample sample = sampleDAO.getSampleByAccessionNumber(resultItem.getAccessionNumber());
-		if( sample!= null){
-			nonconforming = QAService.isOrderNonConforming(sample);
-			//The sample is nonconforming, now we have to check if any sample items are non_conforming and 
-			// if they are are they for this test
-			//Note we only have to check one test since the sample item is the same for all the tests
 
-			if( nonconforming ){
-				List<SampleItem> nonConformingSampleItems = QAService.getNonConformingSampleItems(sample);
-				//If there is a nonconforming sample item then we need to check if it is the one for this
-				//test if it is then it is nonconforming if not then it is not nonconforming
-				if( !nonConformingSampleItems.isEmpty()){					
-					TypeOfSampleTest typeOfSample = sampleTypeTestDAO.getTypeOfSampleTestForTest(resultItem.getTestId());
-					if( typeOfSample != null){
+		Sample sample = sampleDAO.getSampleByAccessionNumber(resultItem
+				.getAccessionNumber());
+		if (sample != null) {
+			nonconforming = QAService.isOrderNonConforming(sample);
+			// The sample is nonconforming, now we have to check if any sample
+			// items are non_conforming and
+			// if they are are they for this test
+			// Note we only have to check one test since the sample item is the
+			// same for all the tests
+
+			if (nonconforming) {
+				List<SampleItem> nonConformingSampleItems = QAService
+						.getNonConformingSampleItems(sample);
+				// If there is a nonconforming sample item then we need to check
+				// if it is the one for this
+				// test if it is then it is nonconforming if not then it is not
+				// nonconforming
+				if (!nonConformingSampleItems.isEmpty()) {
+					TypeOfSampleTest typeOfSample = sampleTypeTestDAO
+							.getTypeOfSampleTestForTest(resultItem.getTestId());
+					if (typeOfSample != null) {
 						String sampleTypeId = typeOfSample.getTypeOfSampleId();
-						nonconforming = false;	
-						for( SampleItem sampleItem : nonConformingSampleItems ){
-							if( sampleTypeId.equals(sampleItem.getTypeOfSample().getId() )){
+						nonconforming = false;
+						for (SampleItem sampleItem : nonConformingSampleItems) {
+							if (sampleTypeId.equals(sampleItem
+									.getTypeOfSample().getId())) {
 								nonconforming = true;
 								break;
 							}
 						}
-					
+
 					}
 				}
-				
+
 			}
-			
+
 		}
-		
+
 		resultItem.setNonconforming(nonconforming);
-		
+
 	}
 
-	private List<List<AnalyzerResultItem>> groupAnalyzerResults(List<AnalyzerResults> analyzerResultsList) {
+	private List<List<AnalyzerResultItem>> groupAnalyzerResults(
+			List<AnalyzerResults> analyzerResultsList) {
 		Map<String, Integer> accessionToAccessionGroupMap = new HashMap<String, Integer>();
 		List<List<AnalyzerResultItem>> accessionGroupedResultsList = new ArrayList<List<AnalyzerResultItem>>();
 
 		for (AnalyzerResults analyzerResult : analyzerResultsList) {
 			AnalyzerResultItem resultItem = analyzerResultsToAnalyzerResultItem(analyzerResult);
-			Integer groupIndex = accessionToAccessionGroupMap.get(resultItem.getAccessionNumber());
+			Integer groupIndex = accessionToAccessionGroupMap.get(resultItem
+					.getAccessionNumber());
 			List<AnalyzerResultItem> group;
 			if (groupIndex == null) {
 				group = new ArrayList<AnalyzerResultItem>();
 				accessionGroupedResultsList.add(group);
-				accessionToAccessionGroupMap.put(resultItem.getAccessionNumber(), accessionGroupedResultsList.size() - 1);
+				accessionToAccessionGroupMap.put(
+						resultItem.getAccessionNumber(),
+						accessionGroupedResultsList.size() - 1);
 			} else {
 				group = accessionGroupedResultsList.get(groupIndex.intValue());
 			}
@@ -236,9 +256,11 @@ public class AnalyzerResultsAction extends BaseAction {
 			}
 
 			String analyzerTestName = analyzerResult.getTestName();
-			MappedTestName mappedTestName = AnalyzerTestNameCache.instance().getMappedTest(analyzerType, analyzerTestName);
+			MappedTestName mappedTestName = AnalyzerTestNameCache.instance()
+					.getMappedTest(analyzerType, analyzerTestName);
 			if (mappedTestName != null) {
-				analyzerResult.setTestName(mappedTestName.getOpenElisTestName());
+				analyzerResult
+						.setTestName(mappedTestName.getOpenElisTestName());
 				analyzerResult.setTestId(mappedTestName.getTestId());
 				resolvedResults.add(analyzerResult);
 			}
@@ -265,10 +287,12 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private List<AnalyzerResults> getAnalyzerResults() {
-		return analyzerResultsDAO.getResultsbyAnalyzer(AnalyzerTestNameCache.instance().getAnalyzerId(analyzerType));
+		return analyzerResultsDAO.getResultsbyAnalyzer(AnalyzerTestNameCache
+				.instance().getAnalyzerId(analyzerType));
 	}
 
-	protected AnalyzerResultItem analyzerResultsToAnalyzerResultItem(AnalyzerResults result) {
+	protected AnalyzerResultItem analyzerResultsToAnalyzerResultItem(
+			AnalyzerResults result) {
 
 		AnalyzerResultItem resultItem = new AnalyzerResultItem();
 		resultItem.setAccessionNumber(result.getAccessionNumber());
@@ -280,32 +304,34 @@ public class AnalyzerResultsAction extends BaseAction {
 		resultItem.setTestId(result.getTestId());
 		resultItem.setCompleteDate(result.getCompleteDateForDisplay());
 		resultItem.setLastUpdated(result.getLastupdated());
-		resultItem.setReadOnly((result.isReadOnly() || result.getTestId() == null));
+		resultItem
+				.setReadOnly((result.isReadOnly() || result.getTestId() == null));
 		resultItem.setResult(getResultForItem(result));
 		resultItem.setTestResultType(result.getResultType());
 		resultItem.setDictionaryResultList(getDictionaryResultList(result));
-		resultItem.setIsHighlighted(!GenericValidator.isBlankOrNull(result.getDuplicateAnalyzerResultId())
+		resultItem.setIsHighlighted(!GenericValidator.isBlankOrNull(result
+				.getDuplicateAnalyzerResultId())
 				|| GenericValidator.isBlankOrNull(result.getTestId()));
 		resultItem.setUserChoiceReflex(giveUserChoice(result));
 		resultItem.setUserChoicePending(false);
 
 		if (resultItem.isUserChoiceReflex()) {
 			setChoiceForCurrentValue(resultItem, result);
-			resultItem.setUserChoicePending(!GenericValidator.isBlankOrNull(resultItem.getSelectionOneText()) );
+			resultItem.setUserChoicePending(!GenericValidator
+					.isBlankOrNull(resultItem.getSelectionOneText()));
 		}
 		return resultItem;
 	}
 
 	private boolean giveUserChoice(AnalyzerResults result) {
 		/*
-		 * This is how we figure out if the user will be able to select 
-		 * 1. Is the test involved with triggering a user selection 
-		 *    reflex 
-		 * 2. If the reflex has sibs has the sample been entered yet 
-		 * 3. If the sample has been entered have all of the sibling 
-		 *    tests been ordered
+		 * This is how we figure out if the user will be able to select 1. Is
+		 * the test involved with triggering a user selection reflex 2. If the
+		 * reflex has sibs has the sample been entered yet 3. If the sample has
+		 * been entered have all of the sibling tests been ordered
 		 */
-		if (!TestReflexUtil.isTriggeringUserChoiceReflexTestId(result.getTestId())) {
+		if (!TestReflexUtil.isTriggeringUserChoiceReflexTestId(result
+				.getTestId())) {
 			return false;
 		}
 
@@ -318,9 +344,11 @@ public class AnalyzerResultsAction extends BaseAction {
 			return false;
 		}
 
-		List<TestReflex> reflexes = reflexUtil.getPossibleUserChoiceTestReflexsForTest(result.getTestId());
+		List<TestReflex> reflexes = reflexUtil
+				.getPossibleUserChoiceTestReflexsForTest(result.getTestId());
 
-		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
+		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample
+				.getId());
 		Set<String> analysisTestIds = new HashSet<String>();
 
 		for (Analysis analysis : analysisList) {
@@ -336,11 +364,13 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private Sample getSampleForAnalyzerResult(AnalyzerResults result) {
-		Sample sample = sampleDAO.getSampleByAccessionNumber(result.getAccessionNumber());
+		Sample sample = sampleDAO.getSampleByAccessionNumber(result
+				.getAccessionNumber());
 		return sample;
 	}
 
-	private void setChoiceForCurrentValue(AnalyzerResultItem resultItem, AnalyzerResults analyzerResult) {
+	private void setChoiceForCurrentValue(AnalyzerResultItem resultItem,
+			AnalyzerResults analyzerResult) {
 		/*
 		 * If there are no siblings for the reflex then we just need to find if
 		 * there are choices for the current value
@@ -350,29 +380,39 @@ public class AnalyzerResultsAction extends BaseAction {
 		 */
 		TestReflex selectionOne = null;
 		TestReflex selectionTwo = null;
-		
-		if (!TestReflexUtil.testIsTriggeringReflexWithSibs(analyzerResult.getTestId())) {
-			List<TestReflex> reflexes = reflexUtil.getTestReflexsForDictioanryResultTestId(analyzerResult.getResult(), analyzerResult.getTestId(), true);
+
+		if (!TestReflexUtil.testIsTriggeringReflexWithSibs(analyzerResult
+				.getTestId())) {
+			List<TestReflex> reflexes = reflexUtil
+					.getTestReflexsForDictioanryResultTestId(
+							analyzerResult.getResult(),
+							analyzerResult.getTestId(), true);
 			resultItem.setReflexSelectionId(null);
 			for (TestReflex reflex : reflexes) {
-					if (selectionOne == null) {
-						selectionOne = reflex;
-					} else {
-						selectionTwo = reflex;
-					}
+				if (selectionOne == null) {
+					selectionOne = reflex;
+				} else {
+					selectionTwo = reflex;
+				}
 			}
 
 		} else {
-			
+
 			Sample sample = getSampleForAnalyzerResult(analyzerResult);
 
-			List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
-			
-			List<TestReflex> reflexesForDisplayedTest = reflexUtil.getTestReflexsForDictioanryResultTestId(analyzerResult.getResult(), analyzerResult.getTestId(), true);
-			
+			List<Analysis> analysisList = analysisDAO
+					.getAnalysesBySampleId(sample.getId());
+
+			List<TestReflex> reflexesForDisplayedTest = reflexUtil
+					.getTestReflexsForDictioanryResultTestId(
+							analyzerResult.getResult(),
+							analyzerResult.getTestId(), true);
+
 			for (TestReflex possibleTestReflex : reflexesForDisplayedTest) {
-				if (TestReflexUtil.USER_CHOOSE_FLAG.equals(possibleTestReflex.getFlags())) {
-					if (GenericValidator.isBlankOrNull(possibleTestReflex.getSiblingReflexId())) {
+				if (TestReflexUtil.USER_CHOOSE_FLAG.equals(possibleTestReflex
+						.getFlags())) {
+					if (GenericValidator.isBlankOrNull(possibleTestReflex
+							.getSiblingReflexId())) {
 						if (possibleTestReflex.getActionScriptlet() != null) {
 							selectionOne = possibleTestReflex;
 							break;
@@ -385,7 +425,8 @@ public class AnalyzerResultsAction extends BaseAction {
 					} else {
 						// find if the sibling reflex is satisfied
 						TestReflex sibTestReflex = new TestReflex();
-						sibTestReflex.setId(possibleTestReflex.getSiblingReflexId());
+						sibTestReflex.setId(possibleTestReflex
+								.getSiblingReflexId());
 
 						testReflexDAO.getData(sibTestReflex);
 
@@ -394,13 +435,18 @@ public class AnalyzerResultsAction extends BaseAction {
 						testResultDAO.getData(sibTestResult);
 
 						for (Analysis analysis : analysisList) {
-							List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
+							List<Result> resultList = resultDAO
+									.getResultsByAnalysis(analysis);
 							Test test = analysis.getTest();
 
 							for (Result result : resultList) {
-								TestResult testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(test.getId(),
-										result.getValue());
-								if (testResult != null && testResult.getId().equals(sibTestReflex.getTestResultId())) {	
+								TestResult testResult = testResultDAO
+										.getTestResultsByTestAndDictonaryResult(
+												test.getId(), result.getValue());
+								if (testResult != null
+										&& testResult.getId()
+												.equals(sibTestReflex
+														.getTestResultId())) {
 									if (possibleTestReflex.getActionScriptlet() != null) {
 										selectionOne = possibleTestReflex;
 										break;
@@ -417,51 +463,75 @@ public class AnalyzerResultsAction extends BaseAction {
 				}
 			}
 		}
-		populateAnalyzerResultItemWithReflexes(resultItem, selectionOne, selectionTwo);
+		populateAnalyzerResultItemWithReflexes(resultItem, selectionOne,
+				selectionTwo);
 	}
 
-	private void populateAnalyzerResultItemWithReflexes(AnalyzerResultItem resultItem, TestReflex selectionOne, TestReflex selectionTwo) {
+	private void populateAnalyzerResultItemWithReflexes(
+			AnalyzerResultItem resultItem, TestReflex selectionOne,
+			TestReflex selectionTwo) {
 		if (selectionOne != null) {
-			if (selectionTwo == null && !GenericValidator.isBlankOrNull(selectionOne.getActionScriptletId())
-					&& !GenericValidator.isBlankOrNull(selectionOne.getTestId())) {
+			if (selectionTwo == null
+					&& !GenericValidator.isBlankOrNull(selectionOne
+							.getActionScriptletId())
+					&& !GenericValidator
+							.isBlankOrNull(selectionOne.getTestId())) {
 
-				resultItem.setSelectionOneText(TestReflexUtil.makeReflexTestName(selectionOne));
-				resultItem.setSelectionOneValue(TestReflexUtil.makeReflexTestValue(selectionOne));
-				resultItem.setSelectionTwoText(TestReflexUtil.makeReflexScriptName(selectionTwo));
-				resultItem.setSelectionTwoValue(TestReflexUtil.makeReflexScriptValue(selectionOne));
+				resultItem.setSelectionOneText(TestReflexUtil
+						.makeReflexTestName(selectionOne));
+				resultItem.setSelectionOneValue(TestReflexUtil
+						.makeReflexTestValue(selectionOne));
+				resultItem.setSelectionTwoText(TestReflexUtil
+						.makeReflexScriptName(selectionTwo));
+				resultItem.setSelectionTwoValue(TestReflexUtil
+						.makeReflexScriptValue(selectionOne));
 			} else if (selectionTwo != null) {
 				if (selectionOne.getTest() != null) {
-					resultItem.setSelectionOneText(TestReflexUtil.makeReflexTestName(selectionOne));
-					resultItem.setSelectionOneValue(TestReflexUtil.makeReflexTestValue(selectionOne));
+					resultItem.setSelectionOneText(TestReflexUtil
+							.makeReflexTestName(selectionOne));
+					resultItem.setSelectionOneValue(TestReflexUtil
+							.makeReflexTestValue(selectionOne));
 				} else {
-					resultItem.setSelectionOneText(TestReflexUtil.makeReflexScriptName(selectionOne));
-					resultItem.setSelectionOneValue(TestReflexUtil.makeReflexScriptValue(selectionOne));
+					resultItem.setSelectionOneText(TestReflexUtil
+							.makeReflexScriptName(selectionOne));
+					resultItem.setSelectionOneValue(TestReflexUtil
+							.makeReflexScriptValue(selectionOne));
 				}
 
 				if (selectionTwo.getTest() != null) {
-					resultItem.setSelectionTwoText(TestReflexUtil.makeReflexTestName(selectionTwo));
-					resultItem.setSelectionTwoValue(TestReflexUtil.makeReflexTestValue(selectionOne));
+					resultItem.setSelectionTwoText(TestReflexUtil
+							.makeReflexTestName(selectionTwo));
+					resultItem.setSelectionTwoValue(TestReflexUtil
+							.makeReflexTestValue(selectionOne));
 				} else {
-					resultItem.setSelectionTwoText(TestReflexUtil.makeReflexScriptName(selectionTwo));
-					resultItem.setSelectionTwoValue(TestReflexUtil.makeReflexScriptValue(selectionOne));
-				}					
+					resultItem.setSelectionTwoText(TestReflexUtil
+							.makeReflexScriptName(selectionTwo));
+					resultItem.setSelectionTwoValue(TestReflexUtil
+							.makeReflexScriptValue(selectionOne));
+				}
 			}
 		}
 	}
 
 	private String getResultForItem(AnalyzerResults result) {
 
-		if ("N".equals(result.getResultType()) || "A".equals(result.getResultType()) || "R".equals(result.getResultType())
-				|| GenericValidator.isBlankOrNull(result.getResultType()) || GenericValidator.isBlankOrNull(result.getResult())) {
+		if ("N".equals(result.getResultType())
+				|| "A".equals(result.getResultType())
+				|| "R".equals(result.getResultType())
+				|| GenericValidator.isBlankOrNull(result.getResultType())
+				|| GenericValidator.isBlankOrNull(result.getResult())) {
 
 			return result.getResult();
 		}
 
-		//If it's readonly or the selectlist can not be gotten then we want the result
-		//otherwise we want the id so the correct selection will be choosen
-		if( result.isReadOnly() || result.getTestId() == null || result.getIsControl()){
-			return dictionaryDAO.getDictionaryById(result.getResult()).getDictEntry() ;
-		}else{
+		// If it's readonly or the selectlist can not be gotten then we want the
+		// result
+		// otherwise we want the id so the correct selection will be choosen
+		if (result.isReadOnly() || result.getTestId() == null
+				|| result.getIsControl()) {
+			return dictionaryDAO.getDictionaryById(result.getResult())
+					.getDictEntry();
+		} else {
 			return result.getResult();
 		}
 	}
@@ -474,17 +544,22 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private List<Dictionary> getDictionaryResultList(AnalyzerResults result) {
-		if ("N".equals(result.getResultType()) || "A".equals(result.getResultType()) || "R".equals(result.getResultType())
-				|| GenericValidator.isBlankOrNull(result.getResultType()) || result.getTestId() == null) {
+		if ("N".equals(result.getResultType())
+				|| "A".equals(result.getResultType())
+				|| "R".equals(result.getResultType())
+				|| GenericValidator.isBlankOrNull(result.getResultType())
+				|| result.getTestId() == null) {
 			return null;
 		}
 
 		List<Dictionary> dictionaryList = new ArrayList<Dictionary>();
 
-		List<TestResult> testResults = testResultDAO.getTestResultsByTest(result.getTestId());
+		List<TestResult> testResults = testResultDAO
+				.getTestResultsByTest(result.getTestId());
 
 		for (TestResult testResult : testResults) {
-			dictionaryList.add(dictionaryDAO.getDictionaryById(testResult.getValue()));
+			dictionaryList.add(dictionaryDAO.getDictionaryById(testResult
+					.getValue()));
 		}
 
 		return dictionaryList;
@@ -510,7 +585,7 @@ public class AnalyzerResultsAction extends BaseAction {
 			key = "banner.menu.results.facscalibur";
 			break;
 		}
-        case FACSCANTO: {
+		case FACSCANTO: {
 			key = "banner.menu.results.facscanto";
 			break;
 		}
@@ -530,6 +605,7 @@ public class AnalyzerResultsAction extends BaseAction {
 			key = "banner.menu.results.cobasc311";
 			break;
 		}
+
 		default: {
 			key = "banner.menu.results.analyzer";
 		}
@@ -553,10 +629,12 @@ public class AnalyzerResultsAction extends BaseAction {
 				analyzerType = AnalyzerType.COBAS_TAQMAN;
 			} else if (requestType.equals("facscanto")) {
 				analyzerType = AnalyzerType.FACSCANTO;
-			}else if (requestType.equals("cobasDBS")) {
+			} else if (requestType.equals("cobasDBS")) {
 				analyzerType = AnalyzerType.COBAS_DBS;
-			}else if (requestType.equals("cobasc311")) {
+			} else if (requestType.equals("cobasc311")) {
 				analyzerType = AnalyzerType.COBAS_C311;
+			} else if (requestType.equals("gerber_4000")) {
+				analyzerType = AnalyzerType.GERBER_4000;
 			}
 		}
 	}

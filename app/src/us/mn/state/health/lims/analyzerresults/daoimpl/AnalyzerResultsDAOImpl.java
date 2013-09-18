@@ -41,13 +41,11 @@ public class AnalyzerResultsDAOImpl extends BaseDAOImpl implements AnalyzerResul
 
 		List<AnalyzerResults> results = null;
 		try {
-			String sql = "from AnalyzerResults ar where ar.analyzerId = :analyzerId order by ar.id";
-
+			String sql = "from AnalyzerResults ar where ar.analyzerId = :analyzerId order by ar.id";           
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setInteger("analyzerId", Integer.parseInt(analyzerId));
 
-			results = query.list();
-
+			results = query.list();			
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 

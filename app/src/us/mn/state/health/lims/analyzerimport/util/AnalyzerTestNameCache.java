@@ -43,6 +43,7 @@ public class AnalyzerTestNameCache {
 	private static final String COBAS_TAQMAN = "Cobas Taqman";
 	private static final String COBAS_DBS = "CobasDBS";
 	private static final String COBAS_C311 = "Cobas C311";
+	private static final String GERBER_4000 = "gerber_4000";
 
 	public static enum AnalyzerType {
 		COBAS_INTEGRA400,
@@ -52,7 +53,8 @@ public class AnalyzerTestNameCache {
 		COBAS_TAQMAN,
 		FACSCANTO,
 		COBAS_DBS,
-		COBAS_C311
+		COBAS_C311,
+		GERBER_4000
 	}
 
 	private static Map<String, MappedTestName> CobasIntegraTestNameMap;
@@ -63,6 +65,7 @@ public class AnalyzerTestNameCache {
 	private static Map<String, MappedTestName> FacscantoTestNameMap;
 	private static Map<String, MappedTestName> CobasDBStoTestNameMap;
 	private static Map<String, MappedTestName> CobasC311toTestNameMap;
+	private static Map<String, MappedTestName> Gerber4000TestNameMap;
 
 	private static Map<String, String> analyzerNameToIdMap;
 	private static Map<AnalyzerType, String> analyzerIDMap;
@@ -95,7 +98,9 @@ public class AnalyzerTestNameCache {
 		case COBAS_DBS:
 			return CobasDBStoTestNameMap.get(analyzerTestName);	
 		case COBAS_C311:
-			return CobasC311toTestNameMap.get(analyzerTestName);		
+			return CobasC311toTestNameMap.get(analyzerTestName);
+		case GERBER_4000:
+			return Gerber4000TestNameMap.get(analyzerTestName);
 		default:
 			return null;
 		}
@@ -127,7 +132,9 @@ public class AnalyzerTestNameCache {
 		case COBAS_DBS:
 			return CobasDBStoTestNameMap;	
 		case COBAS_C311:
-			return CobasC311toTestNameMap;		
+			return CobasC311toTestNameMap;	
+		case GERBER_4000:
+			return Gerber4000TestNameMap;	
 		default:
 			return null;
 		}
@@ -150,6 +157,7 @@ public class AnalyzerTestNameCache {
 		FacscantoTestNameMap = new HashMap<String, MappedTestName>();
 		CobasDBStoTestNameMap = new HashMap<String, MappedTestName>();
 		CobasC311toTestNameMap = new HashMap<String, MappedTestName>();
+		Gerber4000TestNameMap = new HashMap<String, MappedTestName>();
 		
 		analyzerIDMap = new HashMap<AnalyzerType, String>();
 		analyzerNameToIdMap = new HashMap<String, String>();
@@ -181,6 +189,9 @@ public class AnalyzerTestNameCache {
 			}else if( COBAS_C311.equals(analyzer.getName())){
 				analyzerMapList.put(analyzer.getId(), CobasC311toTestNameMap);
 				analyzerIDMap.put(AnalyzerType.COBAS_C311, analyzer.getId());
+			}else if( GERBER_4000.equals(analyzer.getName())){
+				analyzerMapList.put(analyzer.getId(), Gerber4000TestNameMap);
+				analyzerIDMap.put(AnalyzerType.GERBER_4000, analyzer.getId());
 			}
 		}
 

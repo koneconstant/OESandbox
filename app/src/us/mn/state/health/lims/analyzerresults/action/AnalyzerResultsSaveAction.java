@@ -124,7 +124,8 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		typeOfSample.setDescription("DBS");
 		typeOfSample.setDomain("H");
 		typeOfSample = new TypeOfSampleDAOImpl().getTypeOfSampleByDescriptionAndDomain(typeOfSample, false);
-		DBS_SAMPLE_TYPE_ID = typeOfSample.getId();
+		DBS_SAMPLE_TYPE_ID = new TestDAOImpl().getTestByName("Western blot VIH").getId();
+		
 	}
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
