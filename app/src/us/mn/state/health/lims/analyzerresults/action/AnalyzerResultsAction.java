@@ -606,6 +606,10 @@ public class AnalyzerResultsAction extends BaseAction {
 			break;
 		}
 
+		case GERBER_4000: {
+			key = "banner.menu.results.gerber_4000";
+			break;
+		}
 		default: {
 			key = "banner.menu.results.analyzer";
 		}
