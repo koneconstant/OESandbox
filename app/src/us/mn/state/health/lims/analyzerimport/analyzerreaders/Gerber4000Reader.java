@@ -6,6 +6,8 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
@@ -137,7 +139,7 @@ public class Gerber4000Reader  extends AnalyzerLineInserter {
 				analyzerResults.setAnalyzerId(mappedName.getAnalyzerId());
 
 				String result = fields[i].replace("\"", "");
-				result = roundTwoDigits(result);
+				result = roundTwoDigits(formatResult(result));
 				analyzerResults.setResult(result);
 				analyzerResults.setUnits(unitsIndex[i]);
 
@@ -161,6 +163,41 @@ public class Gerber4000Reader  extends AnalyzerLineInserter {
 				}
 			}
 		}
+	}
+	
+	public String formatResult(String param) {
+
+		String var = param.trim();
+		String out = "";
+
+		if (var.equalsIgnoreCase("Target Not Detected")) {
+			out = "Not Detected	";
+		} else if (!var.equalsIgnoreCase("Target Not Detected")) {
+			Pattern pattern = Pattern.compile("^<");
+			Matcher matcher = pattern.matcher(var);
+			if (matcher.find()) {
+				out = "47";
+			} else {
+				Pattern pattern1 = Pattern
+						.compile("[0-9]+[\\.]*[0-9]+E[\\+]*[0-9]+");
+				Matcher matcher1 = pattern1.matcher(var);
+				while (matcher1.find()) {
+
+					String ob = matcher1.group();
+					String value = ob.replace("+", "");
+					String[] expo = value.split("E");
+					int i = (int) ((Double.valueOf(expo[0]) * ((int) Math.pow(
+							10, Double.valueOf(expo[1])))));
+					out = String.valueOf(i);
+
+				}
+
+			}
+
+		}
+
+		return out;
+
 	}
 
 	private String roundTwoDigits(String result) {
