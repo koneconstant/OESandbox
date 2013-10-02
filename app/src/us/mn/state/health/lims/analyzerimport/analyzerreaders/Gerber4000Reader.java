@@ -183,8 +183,7 @@ public class Gerber4000Reader  extends AnalyzerLineInserter {
 				Matcher matcher1 = pattern1.matcher(var);
 				while (matcher1.find()) {
 
-					String ob = matcher1.group();
-					String value = ob.replace("+", "");
+					String value =  matcher1.group().replace("+", "");
 					String[] expo = value.split("E");
 					int i = (int) ((Double.valueOf(expo[0]) * ((int) Math.pow(
 							10, Double.valueOf(expo[1])))));
