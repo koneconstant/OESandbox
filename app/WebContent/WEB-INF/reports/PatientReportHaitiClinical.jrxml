@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientReport" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -397,20 +397,20 @@
 		<band height="130" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName1">
-					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="siteLogo">
 					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName1">
+					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA["Resultats d'Analyses"]]></subreportParameterExpression>
@@ -544,7 +544,7 @@
 			<staticText>
 				<reportElement x="-1" y="0" width="553" height="20"/>
 				<textElement verticalAlignment="Middle" markup="none"/>
-				<text><![CDATA[ R = Renvoyée        A = Résultats d'un autre lab        B = Inférieure à la Normale        E =  Supérieure à la Normale]]></text>
+				<text><![CDATA[ R = Renvoyée     A = Résultats d'un autre lab        B = Inférieure à la Normale        E =  Supérieure à la Normale]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="21" width="370" height="61"/>

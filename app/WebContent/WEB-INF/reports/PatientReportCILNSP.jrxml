@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientReport" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -25,7 +25,7 @@
 	</parameter>
 	<parameter name="leftImage" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="printLNSPLabPersons" class="java.lang.Boolean" isForPrompting="false">
-		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[Boolean.TRUE]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[]]>
@@ -583,14 +583,14 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="147" splitType="Stretch">
+		<band height="157" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="21" width="552" height="64">
+				<reportElement mode="Transparent" x="0" y="21" width="552" height="76">
 					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="0" y="86" width="370" height="61"/>
+				<reportElement x="0" y="97" width="370" height="57"/>
 				<box topPadding="0" leftPadding="4">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -598,11 +598,13 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement/>
-				<text><![CDATA[Remarques générales du laboratoire]]></text>
+				<textElement>
+					<font isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Commentaire:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="370" y="86" width="182" height="61"/>
+				<reportElement x="370" y="97" width="182" height="57"/>
 				<box leftPadding="4">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -611,7 +613,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement/>
-				<text><![CDATA[Signature et validation]]></text>
+				<text><![CDATA[Signature Coordination]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="372" y="126" width="100" height="20"/>
@@ -619,76 +621,123 @@
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="257" y="0" width="294" height="20"/>
+				<reportElement x="234" y="0" width="317" height="20"/>
 				<textElement verticalAlignment="Middle" markup="none"/>
-				<text><![CDATA[B = Inférieure à la Normale. E =  Supérieure à la normale]]></text>
+				<text><![CDATA[ B = Inférieure à la Normale.       E =  Supérieure à la normale]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="20" width="184" height="21">
-					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
-				</reportElement>
-				<box leftPadding="6"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Chef de service]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="184" y="20" width="184" height="21">
-					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
-				</reportElement>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Maîtres Assistants]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="368" y="20" width="184" height="21">
-					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
-				</reportElement>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Assistants - Chef bioclinicque]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="41" width="184" height="20">
+				<reportElement x="0" y="20" width="155" height="21">
 					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="6"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="false"/>
+					<font isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[Pr LOUKOU Y. Guillaume]]></text>
+				<text><![CDATA[Depart de Bact - Virologie]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="184" y="41" width="184" height="20">
+				<reportElement x="155" y="21" width="115" height="21">
+					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Dept de Biochimie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="20" width="151" height="21">
+					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Dept Tech et Technologique]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-1" y="41" width="156" height="20">
+					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[    Pr DOSSO Mireille]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="156" y="41" width="114" height="20">
 					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="0"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="false"/>
+					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Dr. NANGA Z.Yesse]]></text>
+				<text><![CDATA[Pr DJAMAN Alico]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="368" y="41" width="184" height="20">
+				<reportElement x="262" y="41" width="149" height="20">
 					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="0"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="false"/>
+					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Dr. LATHRO J. Serge]]></text>
+				<text><![CDATA[Dr AOUSSI Serge]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="368" y="61" width="184" height="20">
+				<reportElement x="411" y="42" width="141" height="20">
 					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="0"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="false"/>
+					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Dr. CABLAN M. Arsher]]></text>
+				<text><![CDATA[Pr KOUASSI MBengue A.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="-1" y="0" width="235" height="20"/>
 				<textElement verticalAlignment="Middle" markup="none"/>
-				<text><![CDATA[  A = Résultats d'un autre lab. R = Renvoyée ]]></text>
+				<text><![CDATA[  A = Résultats d'un autre lab. R = Renvoyées]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="396" y="20" width="156" height="21">
+					<printWhenExpression><![CDATA[$P{printLNSPLabPersons}]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[     Dept  Prev, Proph et Biosec]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="61" width="549" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="61" width="156" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[ USBV: PR KOUASSI M'bengue A]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="155" y="62" width="105" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[DR BOYVIN L.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="62" width="136" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[PBI: Dr YAPO-CREZOIT C. C. A,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="82" width="136" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[PBM: Dr KAKOU Solange]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="411" y="64" width="123" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[UIC: Dr ACHY  Brou A.]]></text>
 			</staticText>
 		</band>
 	</columnFooter>

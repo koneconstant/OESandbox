@@ -67,10 +67,10 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 	public PatientCILNSPClinical(){
 		super();
 	}
-
+    //Update the name of report PatientReportCILNSP --> PatientReportCIIPCI
 	@Override
 	protected String reportFileName(){
-		return "PatientReportCILNSP";
+		return "PatientReportCIIPCI";
 	}
 
 	@Override
@@ -261,10 +261,9 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 		}
 		return itemAccessionNumber;
 	}
-
+   
 	private HaitiClinicalPatientDataColFormat buildCol(HaitiClinicalPatientDataColFormat colData, HaitiClinicalPatientData patientData, int column){
-
-		if(column == 1){
+ 		if(column == 1){
 			colData.setCol1testName(patientData.getTestName());
 			colData.setCol1result(patientData.getResult());
 			colData.setCol1range(patientData.getTestRefRange());
@@ -273,7 +272,7 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 				colData.setCol1Note(patientData.getNote());
 				colData.turnOnNotes();
 			}
-
+   
 			colData.setAge(createReadableAge(patientData.getDob()));
 
 			String accessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(patientData.getAccessionNumber());
@@ -288,9 +287,9 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 				colData.setCol2Note(patientData.getNote());
 				colData.turnOnNotes();
 			}
-
-		}
-
+    
+		}     
+    
 		return colData;
 	}
 
@@ -349,8 +348,8 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 		return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(clinicalReportItems);
 	}
 
-	@Override
-	protected String getSiteLogo(){
+	@Override    
+	protected String getSiteLogo(){//HaitiLNSP.jpg
 		return isLNSP ? "HaitiLNSP.jpg" : "labLogo.jpg";
 	}
 

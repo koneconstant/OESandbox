@@ -41,6 +41,9 @@ public class Gerber4000Reader extends AnalyzerLineInserter {
 	private String[] testNameIndex;
 	private String[] unitsIndex;
 	private int maxViewedIndex = 0;
+	private Pattern pattern = Pattern.compile("[0-9]+[\\.]*[0-9]+E[\\+]*[0-9]+");
+	Matcher matcher ;
+	
 
 	public boolean insert(List<String> lines, String currentUserId) {
 
@@ -109,6 +112,9 @@ public class Gerber4000Reader extends AnalyzerLineInserter {
 
 	private void addAnalyzerResultFromLine(List<AnalyzerResults> results,
 			String line) {
+		
+		
+		
 		String[] fields = StringUtil.separateCSVWithMixedEmbededQuotes(line);
 
 		// This insures that the row has not been truncated
@@ -180,13 +186,9 @@ public class Gerber4000Reader extends AnalyzerLineInserter {
 		if (var.equalsIgnoreCase("Target Not Detected")) {
 			out = "Not Detected	";
 		} else {
-
-			try {
-				Pattern pattern = Pattern
-						.compile("[0-9]+[\\.]*[0-9]+E[\\+]*[0-9]+");
-				Matcher matcher = pattern.matcher(var);
+			try {				
+				matcher = pattern.matcher(var);
 				while (matcher.find()) {
-
 					String value = matcher.group().replace("+", "");
 					String[] expo = value.split("E");
 					int i = (int) ((Double.valueOf(expo[0]) * ((int) Math.pow(
@@ -199,7 +201,6 @@ public class Gerber4000Reader extends AnalyzerLineInserter {
 		}
 
 		return out;
-
 	}
 
 	private String roundTwoDigits(String result) {
